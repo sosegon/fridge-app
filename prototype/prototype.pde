@@ -25,7 +25,7 @@ PImage[] btn_grocery_imgs = {null, null, null};
 PImage[] btn_temp_imgs = {null, null, null};
 PImage[] btn_sugg_imgs = {null, null, null};
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Grocery                                                                                              //  
+// Grocery variables                                                                                    //  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 Group groceryGroup;
 // There are 2 options for grocery, 2 possible status
@@ -33,7 +33,7 @@ Group groceryGroup;
 boolean grocery_sort = true;
 int tg_x = 124, tg_y = 158, tg_width = 54, tg_height = 16;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Temperature                                                                                          //
+// Temperature variables                                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 Group temperatureGroup;
 // A temperature controller has 2 buttons and 1 display
@@ -79,17 +79,50 @@ int temp_labels_size[] = {
   LBL_TMP_SMALL_SIZE,
   LBL_TMP_SMALL_SIZE
 };
-Textlabel labels[] = {null, null, null, null, null};
+Textlabel txtl_temps[] = {null, null, null, null, null};
 int temp_values[] = {0, 2, 1, -1, 1};
 ControlFont temp_font;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Suggestions                                                                                          //  
+// Suggestions variables                                                                                //  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 String sugg_labels[] = {"Meal1", "Meal2", "Meal3"};
 String sugg_titles[] = {"Meal 1+", "Meal 2+", "Meal 3+"};
 Accordion suggestionsGroup;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Home                                                                                                 //  
+// Home variables                                                                                       //  
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+Group homeGroup;
+String home_temp_labels[] = {
+  "TempMain"
+};
+float home_temp_labels_pos[][] = {
+  {240, 315}
+};
+int home_temp_labels_size[] = {
+  LBL_TMP_MAIN_SIZE
+};
+String home_temp_buttons[] = {
+  "DecreaseMain", "IncreaseMain"
+};
+float home_temp_buttons_pos[][] = {
+  {183, 315}, {284, 315} 
+};
+int home_temp_buttons_size[] = {
+  BTN_TMP_SMALL_SIZE, BTN_TMP_SMALL_SIZE
+};
+Textlabel txtl_home_temps[] = {null};
+
+String home_alert_buttons[] = {
+  "Expire", "Missing"
+};
+float home_alert_buttons_pos[][] = {
+  {206, 126}, {307, 126}
+};
+int home_alert_buttons_size[] = {
+  BTN_TMP_SMALL_SIZE, BTN_TMP_SMALL_SIZE
+};
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                      //  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
   size(360, 640);
@@ -115,7 +148,7 @@ void setup() {
   im_screen1 = loadImage("Temperature.png");
   im_screen2 = loadImage("Suggestions.png");
 
-  displayHome();
+  Home(-1);
 }
 
 void draw() {
@@ -147,7 +180,7 @@ public void setTabs() {
 
   // This button is added to avoid the suggestions elements to be displayed at start
   cp5.addButton("Home")
-    .setValue(0)
+    .setValue(-1)
     .setPosition(0, 0)
     .setSize(0, 0)
     .setLabel("");
@@ -214,7 +247,7 @@ public void displayTemperature() {
     current.setFont(temp_font);
     current.setColorValue(0x00000000);
     temperatureGroup.addDrawable(current);
-    labels[i] = current;
+    txtl_temps[i] = current;
 
     Button currentDec = new Button(cp5, temp_buttons[i*2]);
     currentDec
@@ -222,7 +255,7 @@ public void displayTemperature() {
       .setSize(temp_buttons_size[i*2], temp_buttons_size[i*2])
       .setGroup(temperatureGroup)
       .setImages(btn_dec_imgs)
-      .addListener(new TemperatureControlListener(i, temp_values, labels, false));
+      .addListener(new TemperatureControlListener(i, temp_values, txtl_temps, false));
     temperatureGroup.addDrawable(currentDec);
    
     Button currentInc = new Button(cp5, temp_buttons[i*2+1]);
@@ -231,7 +264,7 @@ public void displayTemperature() {
       .setSize(temp_buttons_size[i*2+1], temp_buttons_size[i*2+1])
       .setGroup(temperatureGroup)
       .setImages(btn_inc_imgs)
-      .addListener(new TemperatureControlListener(i, temp_values, labels, true));
+      .addListener(new TemperatureControlListener(i, temp_values, txtl_temps, true));
     temperatureGroup.addDrawable(currentInc);    
   }
 }
@@ -251,7 +284,7 @@ class TemperatureControlListener implements ControlListener {
 
   public void controlEvent(ControlEvent theEvent) {     
     if (mindex == 0) { // increase or decrease all temperatures
-      for (int i = 0; i < mlabels.length; i++) {
+      for (int i = 0; i < mvalues.length; i++) {
         if (mincrease) {
           mvalues[i]++;
         } else {
@@ -324,16 +357,85 @@ public void Suggestions(int value) {
 // Home                                                                                                 //  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 public void displayHome() {
-  Home(-1);
+  homeGroup = new Group(cp5, "HomeGroup");
+  
+  // Controllers
+  for (int i = 0; i < home_temp_labels.length; i++) {
+    Textlabel current = new Textlabel(cp5, home_temp_labels[i], 0, 0);
+    current
+      .setText(String.valueOf(temp_values[i]))
+      .setPosition(home_temp_labels_pos[i])
+      ;
+    current.setFont(temp_font);
+    current.setColorValue(0x00000000);
+    homeGroup.addDrawable(current);
+    txtl_home_temps[i] = current;
+
+    Button currentDec = new Button(cp5, home_temp_buttons[i*2]);
+    currentDec
+      .setPosition(home_temp_buttons_pos[i*2])
+      .setSize(home_temp_buttons_size[i*2], home_temp_buttons_size[i*2])
+      .setGroup(homeGroup)
+      .setImages(btn_dec_imgs)
+      .addListener(new HomeTemperatureControlListener(i, temp_values, txtl_home_temps, false));
+    homeGroup.addDrawable(currentDec);
+   
+    Button currentInc = new Button(cp5, home_temp_buttons[i*2+1]);
+    currentInc
+      .setPosition(home_temp_buttons_pos[i*2+1])
+      .setSize(home_temp_buttons_size[i*2+1], home_temp_buttons_size[i*2+1])
+      .setGroup(homeGroup)
+      .setImages(btn_inc_imgs)
+      .addListener(new HomeTemperatureControlListener(i, temp_values, txtl_home_temps, true));
+    homeGroup.addDrawable(currentInc);    
+  }
+}
+class HomeTemperatureControlListener implements ControlListener {
+  int mindex;
+  int[] mvalues;
+  Textlabel mlabels[];
+  boolean mincrease;
+  final int TEMP_OFFSET = 2;
+  public HomeTemperatureControlListener(int index, int[] values, Textlabel[] labels, boolean increase) {
+    mindex = index;
+    mvalues = values;
+    mlabels = labels;
+    mincrease = increase;
+  }
+
+  public void controlEvent(ControlEvent theEvent) {     
+    if (mindex == 0) { // increase or decrease all temperatures
+      for (int i = 0; i < mvalues.length; i++) {
+        if (mincrease) {
+          mvalues[i]++;
+        } else {
+          mvalues[i]--;
+        }
+      }
+    } else {
+      if (mincrease && mvalues[mindex] < mvalues[0] + TEMP_OFFSET) {
+        mvalues[mindex]++;
+      } else if (!mincrease && mvalues[mindex] > mvalues[0] - TEMP_OFFSET) {
+        mvalues[mindex]--;
+      }
+    }
+
+    for (int i = 0; i < mlabels.length; i++) {
+      mlabels[i].setText(String.valueOf(mvalues[i]));
+    }
+  }
 }
 public void Home(int value) {
   clearBody();
   current_screen = im_screen_home;
   tab_selected = value;
+  
+  displayHome();
 }
 
 public void clearBody() {
   cp5.remove("GroceryGroup");
   cp5.remove("TemperatureGroup");
   cp5.remove("SuggestionsGroup");
+  cp5.remove("HomeGroup");
 }
