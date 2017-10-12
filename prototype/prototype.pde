@@ -31,7 +31,9 @@ Group groceryGroup;
 // There are 2 options for grocery, 2 possible status
 // true: Weight,  false: Date
 boolean grocery_sort = true;
-int tg_x = 124, tg_y = 158, tg_width = 54, tg_height = 16;
+int tg_x = 130, tg_y = 473, tg_width = 100, tg_height = 17;
+int color_on = color(0, 150, 136);
+int color_off = color(77, 182, 172);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Temperature variables                                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +201,8 @@ public void displayGrocery() {
     .setSize(tg_width, tg_height)
     .setValue(grocery_sort)
     .setMode(ControlP5.SWITCH)
+    .setColor(new CColor(color_on, color_off, color_on, color_off, color_on))
+    .setLabel("")
     .setGroup(groceryGroup)
     ;
   groceryGroup.addDrawable(tgSort);
