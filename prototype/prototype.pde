@@ -349,7 +349,7 @@ public void displaySuggestions() {
         .setColorLabel(color_on)
         .setFont(temp_font)
         .setLabel(sugg_titles[i]);    
-    Button current = new Button(cp5, sugg_labels[i]);
+    Button current = new Button(cp5, sugg_labels[i] + "btn");
     PImage im = loadImage(sugg_labels[i] + ".png");
     current.setPosition(0, 0)
       .setImages(im, im, im)
@@ -420,7 +420,7 @@ public void displayHome() {
   }
   
   //Trick to avoid error when deleting the buttons
-  Button btn_alert_days = new Button(cp5, home_alert_buttons[2]);
+  Button btn_alert_days = new Button(cp5, home_alert_buttons[2] + "2");
   btn_alert_days
     .setPosition(home_alert_buttons_pos[2])
     .setSize(home_alert_buttons_size[2], home_alert_buttons_size[2])
