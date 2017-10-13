@@ -24,6 +24,7 @@ PImage[] btn_inc_imgs = {null, null, null};
 PImage[] btn_grocery_imgs = {null, null, null};
 PImage[] btn_temp_imgs = {null, null, null};
 PImage[] btn_sugg_imgs = {null, null, null};
+PImage[] btn_alert_imgs = {null, null, null};
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Grocery variables                                                                                    //  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,14 +115,18 @@ int home_temp_buttons_size[] = {
 };
 Textlabel txtl_home_temps[] = {null};
 
+// The third button is just a trick to avoid an error when removing the buttons
 String home_alert_buttons[] = {
-  "Expire", "Missing"
+  "Expire", "Missing", "Extra"
 };
 float home_alert_buttons_pos[][] = {
-  {206, 126}, {307, 126}
+  {288, 426}, {288, 477}, {0, 0}
 };
 int home_alert_buttons_size[] = {
-  BTN_TMP_SMALL_SIZE, BTN_TMP_SMALL_SIZE
+  BTN_TMP_SMALL_SIZE, BTN_TMP_SMALL_SIZE, 0
+};
+boolean home_alert_values[] = {
+  false, true, true
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                      //  
@@ -140,6 +145,7 @@ void setup() {
     btn_grocery_imgs[i] = loadImage("btn_grocery"+String.valueOf(i)+".png");
     btn_temp_imgs[i] = loadImage("btn_temp"+String.valueOf(i)+".png");
     btn_sugg_imgs[i] = loadImage("btn_sugg"+String.valueOf(i)+".png");
+    btn_alert_imgs[i] = loadImage("btn_alert"+String.valueOf(i)+".png");
   }
   
   setTabs();
@@ -393,6 +399,39 @@ public void displayHome() {
       .addListener(new HomeTemperatureControlListener(i, temp_values, txtl_home_temps, true));
     homeGroup.addDrawable(currentInc);    
   }
+  
+ for(int i = 0; i < home_alert_buttons.length - 1; i++) {
+    Button btn_alert_days = new Button(cp5, home_alert_buttons[i]);
+    btn_alert_days
+      .setPosition(home_alert_buttons_pos[i])
+      .setSize(home_alert_buttons_size[i], home_alert_buttons_size[i])
+      //.setGroup(homeGroup) // do not set into a group!!! cause error in deletion ERROR
+      .setImages(btn_alert_imgs)
+      .addListener(new HomeAlertControlListener(home_alert_values[i]));
+    //homeGroup.addDrawable(btn_alert_days);
+  }
+  
+  //Trick to avoid error when deleting the buttons
+  Button btn_alert_days = new Button(cp5, home_alert_buttons[2]);
+  btn_alert_days
+    .setPosition(home_alert_buttons_pos[2])
+    .setSize(home_alert_buttons_size[2], home_alert_buttons_size[2])
+    //.setGroup(homeGroup) // do not set into a group!!! cause error in deletion ERROR
+    //.setImages(btn_alert_imgs)
+    .addListener(new HomeAlertControlListener(home_alert_values[2]));
+  
+}
+class HomeAlertControlListener implements ControlListener {
+  boolean mtoggle;
+  public HomeAlertControlListener(boolean toggle) {
+    mtoggle = toggle;
+  }
+
+  public void controlEvent(ControlEvent theEvent) {     
+    GrocerySort(mtoggle);
+    Grocery(0);
+    
+  }
 }
 class HomeTemperatureControlListener implements ControlListener {
   int mindex;
@@ -442,4 +481,11 @@ public void clearBody() {
   cp5.remove("TemperatureGroup");
   cp5.remove("SuggestionsGroup");
   cp5.remove("HomeGroup");
+  removeAlerts();
+}
+
+public void removeAlerts() {
+  for(int i = 0; i < home_alert_buttons.length - 1; i++) {
+    cp5.remove(home_alert_buttons[i]);
+  }
 }
