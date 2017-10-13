@@ -11,6 +11,8 @@ int color_tb_pres = color(200, 200, 255);
 int color_tb_fore = color(200, 255, 200); 
 int color_tb_back = color(255, 200, 200);
 
+int color_white = color(255, 255, 255);
+
 int gr_x = 0, gr_y = 520;
 int tp_x = 120, tp_y = 520;
 int sg_x = 240, sg_y = 520;
@@ -91,6 +93,8 @@ ControlFont temp_font;
 String sugg_labels[] = {"Meal1", "Meal2", "Meal3"};
 String sugg_titles[] = {"Meal 1+", "Meal 2+", "Meal 3+"};
 Accordion suggestionsGroup;
+int sgl_x = 20, sgl_y = 105, sgl_width = 320, sgl_height = 170;
+int sgl_bar_height = 50;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Home variables                                                                                       //  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,16 +335,20 @@ public void Temperature(int value) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 public void displaySuggestions() {
   suggestionsGroup = new Accordion(cp5, "SuggestionsGroup")
-    .setPosition(50, 70)
-    .setMinItemHeight(100)
-    .setWidth(300)
+    .setPosition(sgl_x, sgl_y)
+    .setMinItemHeight(sgl_height)
+    .setWidth(sgl_width)
     ;
 
   for (int i = 0; i < sugg_labels.length; i++) {
     Group meal = new Group(cp5, sugg_labels[i]);
-    meal.setBarHeight(90)
-        .setBackgroundColor(color_tb_pres)
-        .setLabel(sugg_titles[i]);
+    meal.setBarHeight(sgl_bar_height)
+        .setColor(new CColor(color_on, color_off, color_on, color_off, color_on))        
+        .setColorBackground(color_white)
+        .setColorForeground(color_off)
+        .setColorLabel(color_on)
+        .setFont(temp_font)
+        .setLabel(sugg_titles[i]);    
     Button current = new Button(cp5, sugg_labels[i]);
     PImage im = loadImage(sugg_labels[i] + ".png");
     current.setPosition(0, 0)
