@@ -1,5 +1,6 @@
 import controlP5.*; //<>// //<>//
 
+String assets_folder = "assets/";
 PImage current_screen, im_screen_home, im_screen0_0, im_screen0_1, im_screen1, im_screen2;
 PFont f;
 ControlP5 cp5;
@@ -144,16 +145,16 @@ void setup() {
   noStroke();
   cp5 = new ControlP5(this);
   
-  PFont pfont = createFont("Arial", 20, true);
+  PFont pfont = createFont("", 1);
   temp_font = new ControlFont(pfont, 25);
   
   setTabsAndHomeButtons();
   
-  im_screen_home = loadImage("Home.png");
-  im_screen0_0 = loadImage("Grocery0.png");
-  im_screen0_1 = loadImage("Grocery1.png");
-  im_screen1 = loadImage("Temperature.png");
-  im_screen2 = loadImage("Suggestions.png");
+  im_screen_home = loadImage(assets_folder + "Home.png");
+  im_screen0_0 = loadImage(assets_folder + "Grocery0.png");
+  im_screen0_1 = loadImage(assets_folder + "Grocery1.png");
+  im_screen1 = loadImage(assets_folder + "Temperature.png");
+  im_screen2 = loadImage(assets_folder + "Suggestions.png");
 
   Home(-1);
 }
@@ -166,14 +167,14 @@ public void setTabsAndHomeButtons() {
 
   // Load images
   for(int i = 0; i < 3; i++) {
-    btn_home_visible_imgs[i] = loadImage("btn_home_visible"+String.valueOf(i)+".png");
-    btn_home_invisible_imgs[i] = loadImage("btn_home_invisible"+String.valueOf(i)+".png");
-    btn_dec_imgs[i] = loadImage("btn_dec"+String.valueOf(i)+".png");
-    btn_inc_imgs[i] = loadImage("btn_inc"+String.valueOf(i)+".png");
-    btn_grocery_imgs[i] = loadImage("btn_grocery"+String.valueOf(i)+".png");
-    btn_temp_imgs[i] = loadImage("btn_temp"+String.valueOf(i)+".png");
-    btn_sugg_imgs[i] = loadImage("btn_sugg"+String.valueOf(i)+".png");
-    btn_alert_imgs[i] = loadImage("btn_alert"+String.valueOf(i)+".png");
+    btn_home_visible_imgs[i] = loadImage(assets_folder + "btn_home_visible"+String.valueOf(i)+".png");
+    btn_home_invisible_imgs[i] = loadImage(assets_folder + "btn_home_invisible"+String.valueOf(i)+".png");
+    btn_dec_imgs[i] = loadImage(assets_folder + "btn_dec"+String.valueOf(i)+".png");
+    btn_inc_imgs[i] = loadImage(assets_folder + "btn_inc"+String.valueOf(i)+".png");
+    btn_grocery_imgs[i] = loadImage(assets_folder + "btn_grocery"+String.valueOf(i)+".png");
+    btn_temp_imgs[i] = loadImage(assets_folder + "btn_temp"+String.valueOf(i)+".png");
+    btn_sugg_imgs[i] = loadImage(assets_folder + "btn_sugg"+String.valueOf(i)+".png");
+    btn_alert_imgs[i] = loadImage(assets_folder + "btn_alert"+String.valueOf(i)+".png");
   }
 
   cp5.addButton("HomeButton")
@@ -359,7 +360,7 @@ public void displaySuggestions() {
         .setFont(temp_font)
         .setLabel(sugg_titles[i]);    
     Button current = new Button(cp5, sugg_labels[i] + "btn");
-    PImage im = loadImage(sugg_labels[i] + ".png");
+    PImage im = loadImage(assets_folder + sugg_labels[i] + ".png");
     current.setPosition(0, 0)
       .setImages(im, im, im)
       .setGroup(meal)
