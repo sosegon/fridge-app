@@ -17,11 +17,15 @@ int gr_x = 0, gr_y = 520;
 int tp_x = 120, tp_y = 520;
 int sg_x = 240, sg_y = 520;
 
+int home_button_x = 14, home_button_y = 36, home_button_size = 48; 
+
 // 0: Grocery, 1: Temperature, 2: Suggestions
 int tab_selected = 0;
 
 // Button images
 PImage[] btn_dec_imgs = {null, null, null};
+PImage[] btn_home_visible_imgs = {null, null, null};
+PImage[] btn_home_invisible_imgs = {null, null, null};
 PImage[] btn_inc_imgs = {null, null, null};
 PImage[] btn_grocery_imgs = {null, null, null};
 PImage[] btn_temp_imgs = {null, null, null};
@@ -143,16 +147,7 @@ void setup() {
   PFont pfont = createFont("Arial", 20, true);
   temp_font = new ControlFont(pfont, 25);
   
-  for(int i = 0; i < 3; i++) {
-    btn_dec_imgs[i] = loadImage("btn_dec"+String.valueOf(i)+".png");
-    btn_inc_imgs[i] = loadImage("btn_inc"+String.valueOf(i)+".png");
-    btn_grocery_imgs[i] = loadImage("btn_grocery"+String.valueOf(i)+".png");
-    btn_temp_imgs[i] = loadImage("btn_temp"+String.valueOf(i)+".png");
-    btn_sugg_imgs[i] = loadImage("btn_sugg"+String.valueOf(i)+".png");
-    btn_alert_imgs[i] = loadImage("btn_alert"+String.valueOf(i)+".png");
-  }
-  
-  setTabs();
+  setTabsAndHomeButtons();
   
   im_screen_home = loadImage("Home.png");
   im_screen0_0 = loadImage("Grocery0.png");
@@ -167,8 +162,27 @@ void draw() {
   background(current_screen);
 }
 
-public void setTabs() {
+public void setTabsAndHomeButtons() {
 
+  // Load images
+  for(int i = 0; i < 3; i++) {
+    btn_home_visible_imgs[i] = loadImage("btn_home_visible"+String.valueOf(i)+".png");
+    btn_home_invisible_imgs[i] = loadImage("btn_home_invisible"+String.valueOf(i)+".png");
+    btn_dec_imgs[i] = loadImage("btn_dec"+String.valueOf(i)+".png");
+    btn_inc_imgs[i] = loadImage("btn_inc"+String.valueOf(i)+".png");
+    btn_grocery_imgs[i] = loadImage("btn_grocery"+String.valueOf(i)+".png");
+    btn_temp_imgs[i] = loadImage("btn_temp"+String.valueOf(i)+".png");
+    btn_sugg_imgs[i] = loadImage("btn_sugg"+String.valueOf(i)+".png");
+    btn_alert_imgs[i] = loadImage("btn_alert"+String.valueOf(i)+".png");
+  }
+
+  cp5.addButton("HomeButton")
+    .setValue(-1)
+    .setPosition(home_button_x, home_button_y)
+    .setSize(home_button_size, home_button_size)
+    ;
+  
+  // Create the buttons
   cp5.addButton("Grocery")
     .setValue(0)
     .setPosition(gr_x, gr_y)
@@ -189,13 +203,6 @@ public void setTabs() {
     .setSize(tab_width, tab_height)
     .setImages(btn_sugg_imgs)
     ;
-
-  // This button is added to avoid the suggestions elements to be displayed at start
-  cp5.addButton("Home")
-    .setValue(-1)
-    .setPosition(0, 0)
-    .setSize(0, 0)
-    .setLabel("");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +223,7 @@ public void displayGrocery() {
     .setGroup(groceryGroup)
     ;
   groceryGroup.addDrawable(tgSort);
+  showHomeButton();
 }
 
 void GrocerySort(boolean value) {
@@ -281,6 +289,7 @@ public void displayTemperature() {
       .addListener(new TemperatureControlListener(i, temp_values, txtl_temps, true));
     temperatureGroup.addDrawable(currentInc);    
   }
+  showHomeButton();
 }
 
 class TemperatureControlListener implements ControlListener {
@@ -356,8 +365,10 @@ public void displaySuggestions() {
       .setGroup(meal)
       ;
     meal.addDrawable(current);
-    suggestionsGroup.addItem(meal);
+    suggestionsGroup.addItem(meal);    
   }
+  
+  showHomeButton();
 }
 public void Suggestions(int value) {
   if (tab_selected == value) {
@@ -437,8 +448,7 @@ class HomeAlertControlListener implements ControlListener {
 
   public void controlEvent(ControlEvent theEvent) {     
     GrocerySort(mtoggle);
-    Grocery(0);
-    
+    Grocery(0);    
   }
 }
 class HomeTemperatureControlListener implements ControlListener {
@@ -477,11 +487,17 @@ class HomeTemperatureControlListener implements ControlListener {
   }
 }
 public void Home(int value) {
+  if (tab_selected == value) {
+    return;
+  }
+
   clearBody();
+
   current_screen = im_screen_home;
   tab_selected = value;
   
   displayHome();
+  hideHomeButton();
 }
 
 public void clearBody() {
@@ -496,4 +512,25 @@ public void removeAlerts() {
   for(int i = 0; i < home_alert_buttons.length - 1; i++) {
     cp5.remove(home_alert_buttons[i]);
   }
+}
+
+public void showHomeButton() {  
+  cp5
+    .getController("HomeButton")
+    .setImages(btn_home_visible_imgs)
+    ;
+  println("showHomeButton");
+}
+
+public void hideHomeButton() {
+  cp5
+    .getController("HomeButton")
+    .setImages(btn_home_invisible_imgs)
+    ;  
+  println("hideHomeButton");
+}
+
+public void HomeButton(int value) { 
+  Home(value);  
+  println("home pressed");
 }
