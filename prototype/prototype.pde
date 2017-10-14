@@ -91,9 +91,9 @@ ControlFont temp_font;
 // Suggestions variables                                                                                //  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 String sugg_labels[] = {"Meal1", "Meal2", "Meal3"};
-String sugg_titles[] = {"Meal 1+", "Meal 2+", "Meal 3+"};
+String sugg_titles[] = {"Tomato-Cheese Sauce", "Tomato Soup", "Tomato Salad"};
 Accordion suggestionsGroup;
-int sgl_x = 20, sgl_y = 105, sgl_width = 320, sgl_height = 170;
+int sgl_x = 20, sgl_y = 105, sgl_width = 320, sgl_height = 250;
 int sgl_bar_height = 50;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Home variables                                                                                       //  
